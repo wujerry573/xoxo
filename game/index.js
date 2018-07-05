@@ -10,6 +10,7 @@ export default function reducer(
     case 'MOVE':
       const newBoard = state.board.setIn(action.position, action.player);
       const newWinner = winner(newBoard);
+      console.log('newWinner =', newWinner);
       return {
         board: newBoard,
         turn: state.turn === 'X' ? 'O' : 'X',
@@ -23,7 +24,7 @@ export default function reducer(
 
 //Action Creator
 const move = (turn, position) => {
-  console.log('turn =', turn);
+  // console.log('turn =', turn);
   return {
     type: 'MOVE',
     position: position,
@@ -37,14 +38,14 @@ const move = (turn, position) => {
 
 const winner = board => {
   const coordsArr = [
-    { a: [0, 0], b: [0, 1], c: [0, 2] },
-    { a: [1, 0], b: [1, 1], c: [1, 2] },
-    { a: [2, 0], b: [2, 1], c: [2, 2] },
-    { a: [0, 0], b: [1, 0], c: [2, 0] },
-    { a: [0, 1], b: [1, 1], c: [2, 1] },
-    { a: [0, 2], b: [1, 2], c: [2, 2] },
-    { a: [0, 0], b: [1, 1], c: [2, 2] },
-    { a: [0, 2], b: [1, 1], c: [2, 0] }
+    { 1: [0, 0], 2: [0, 1], 3: [0, 2] },
+    { 1: [1, 0], 2: [1, 1], 3: [1, 2] },
+    { 1: [2, 0], 2: [2, 1], 3: [2, 2] },
+    { 1: [0, 0], 2: [1, 0], 3: [2, 0] },
+    { 1: [0, 1], 2: [1, 1], 3: [2, 1] },
+    { 1: [0, 2], 2: [1, 2], 3: [2, 2] },
+    { 1: [0, 0], 2: [1, 1], 3: [2, 2] },
+    { 1: [0, 2], 2: [1, 1], 3: [2, 0] }
   ];
 
   let result = '';
@@ -54,10 +55,14 @@ const winner = board => {
       return result;
     }
   }
-
+  let counter = 9;
   for (let j = 0; j < coordsArr.length; j++) {
-    for (let coords in coordsArr[i]) {
-      if (!hasIn(board, coords)) return undefined;
+    for (let coords in coordsArr[j]) {
+      console.log('counter', counter);
+      if (!board.hasIn(coordsArr[j][coords])) {
+        counter--;
+        return undefined;
+      }
     }
   }
   return 'draw';
@@ -69,12 +74,13 @@ const winner = board => {
 const streak = (board, coordsObj) => {
   let tally = { x: 0, o: 0 };
   for (let coords in coordsObj) {
-    if (getIn(board, coords) === 'X') {
+    if (board.getIn(coordsObj[coords]) === 'X') {
       tally.x++;
-    } else if (getIn(board, coords) === 'O') {
+    } else if (board.getIn(coordsObj[coords]) === 'O') {
       tally.o++;
     }
   }
+  // console.log('tally', tally);
   if (tally.x === 3) {
     return 'X';
   } else if (tally.o === 3) {

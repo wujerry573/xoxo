@@ -37,7 +37,18 @@ game.subscribe(printBoard);
 game.subscribe(getInput('X'));
 game.subscribe(getInput('O'));
 
-game.subscribe();
+game.subscribe(() => {
+  if (game.getState().winner === 'X') {
+    console.log('X is the winner!');
+    process.exit(0);
+  } else if (game.getState().winner === 'O') {
+    console.log('O is the winner!');
+    process.exit(0);
+  } else if (game.getState().winner === 'draw') {
+    console.log("It's a draw!");
+    process.exit(0);
+  }
+});
 
 // We dispatch a dummy START action to call all our
 // subscribers the first time.
