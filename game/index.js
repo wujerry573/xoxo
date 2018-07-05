@@ -6,6 +6,10 @@ export default function reducer(
 	state = { winner: '', board: board, turn: 'X' },
 	action
 ) {
+	const error = bad(state, action);
+	if (error) {
+		return state;
+	}
 	switch (action.type) {
 	case 'MOVE':
 		const newBoard = state.board.setIn(action.position, action.player);
@@ -21,6 +25,22 @@ export default function reducer(
 		return state;
 	}
 }
+
+const bad = (state, action) => {
+	if (state.board.hasIn(action.position)) {
+		console.log('something is there already');
+		return true;
+	}
+	if (
+		action.position.some(element => {
+			return ![0, 1, 2].includes(element);
+		})
+	) {
+		console.log('invalid position');
+		return true;
+	}
+	return false;
+};
 
 //Action Creator
 const move = (turn, position) => {
